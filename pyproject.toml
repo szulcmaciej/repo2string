@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repo2string"
-version = "0.1.2"
+version = "0.2.0"
 description = "Copy any repository into the clipboard. And get the token count."
 readme = "readme.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 authors = [
   { name="Maciej Szulc", email="szulcmaciej1@gmail.com" },
 ]
@@ -19,7 +19,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -63,5 +62,5 @@ select = [
     "B",  # flake8-bugbear
 ]
 ignore = []
-target-version = "py37"
+target-version = "py38"
 line-length = 100
