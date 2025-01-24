@@ -50,7 +50,8 @@ addopts = "-v --cov=repo2string --cov-report=term-missing"
 test = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
-    "ruff>=0.1.0"
+    "ruff>=0.1.0",
+    "pre-commit>=4.1.0"
 ]
 
 [tool.ruff]
