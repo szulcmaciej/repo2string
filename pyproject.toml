@@ -44,7 +44,7 @@ repo2string = "repo2string.cli:main"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=repo2string --cov-report=term-missing"
+addopts = "-v --cov=repo2string --cov-report=term-missing --no-cov-on-fail"
 
 [project.optional-dependencies]
 test = [
