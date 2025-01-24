@@ -1,4 +1,5 @@
 [run]
+branch = True
 source = repo2string
 omit = tests/*
 
@@ -10,4 +11,9 @@ exclude_lines =
     raise NotImplementedError
     if __name__ == .__main__.:
     pass
-    raise ImportError 
+    raise ImportError
+
+[paths]
+source =
+    repo2string/
+    */site-packages/repo2string/ 
