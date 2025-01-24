@@ -1,5 +1,10 @@
 # repo2string
 
+[![PyPI version](https://badge.fury.io/py/repo2string.svg)](https://badge.fury.io/py/repo2string)
+[![Python Versions](https://img.shields.io/pypi/pyversions/repo2string)](https://pypi.org/project/repo2string/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://static.pepy.tech/badge/repo2string)](https://pepy.tech/project/repo2string)
+
 **repo2string** is a Python package and CLI tool that gathers all files in a repository 
 (or any folder), excluding ignored files as specified by a `.gitignore` (if present), 
 and concatenates them into a single string. This is useful for copying the entire 
@@ -18,13 +23,19 @@ Features:
 
 ## Installation
 
+You can install `repo2string` directly from PyPI:
+
 ```bash
-git clone https://github.com/szulcmaciej/repo2string
+pip install repo2string
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/szulcmaciej/repo2string.git
 cd repo2string
 pip install .
 ```
-
-*(Make sure [pyperclip](https://pypi.org/project/pyperclip/) and [tiktoken](https://pypi.org/project/tiktoken/) are installed; they’re declared as dependencies in `pyproject.toml`.)*
 
 ## Usage
 
