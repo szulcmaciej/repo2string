@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "repo2string"
 version = "0.1.2"
-description = "Turn a repository's tracked files into a single text for LLM context (with token counts)."
+description = "Copy any repository into the clipboard. And get the token count."
 readme = "readme.md"
 requires-python = ">=3.7"
 authors = [
@@ -41,3 +41,27 @@ dependencies = [
 # This makes a console script entry point named `repo2string`
 [project.scripts]
 repo2string = "repo2string.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=repo2string"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0"
+]
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+]
+ignore = []
+target-version = "py37"
+line-length = 100
