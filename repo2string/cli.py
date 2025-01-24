@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 
 import pyperclip
 from pathspec import PathSpec
@@ -7,13 +8,16 @@ from pathspec import PathSpec
 # Attempt to import tiktoken for real token counting.
 try:
     import tiktoken
+
     ENCODER = tiktoken.encoding_for_model("gpt-4o")
+
     def count_tokens(text):
         return len(ENCODER.encode(text))
 except ImportError:
     # Fallback to a simple approximation if tiktoken is not available
     def count_tokens(text):
         return len(text.split())
+
 
 def get_files_content(path="."):
     """Get the contents of all tracked files in the repository."""
@@ -52,6 +56,7 @@ def get_files_content(path="."):
 
     return files_data, assemble_text(files_data)
 
+
 def assemble_text(files_data):
     """Assemble the final text from file data."""
     parts = []
@@ -68,6 +73,7 @@ def assemble_text(files_data):
         parts.append(content)
 
     return "\n".join(parts)
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -87,6 +93,11 @@ def main():
     )
     args = parser.parse_args()
 
+    # Check if path exists
+    if not os.path.exists(args.path):
+        print(f"Error: Path '{args.path}' does not exist.", file=sys.stderr)
+        sys.exit(1)
+
     # Get the content
     files_data, content = get_files_content(args.path)
 
@@ -105,9 +116,7 @@ def main():
             if line.startswith("--- ") and line.endswith(" ---"):
                 if current_file:
                     file_content = "\n".join(current_content)
-                    file_token_info.append(
-                        (current_file, file_content, count_tokens(file_content))
-                    )
+                    file_token_info.append((current_file, file_content, count_tokens(file_content)))
                 current_file = line[4:-4]  # Remove "--- " and " ---"
                 current_content = []
             elif current_file:
@@ -116,9 +125,7 @@ def main():
         # Don't forget the last file
         if current_file and current_content:
             file_content = "\n".join(current_content)
-            file_token_info.append(
-                (current_file, file_content, count_tokens(file_content))
-            )
+            file_token_info.append((current_file, file_content, count_tokens(file_content)))
 
         # Sort by token count (descending)
         file_token_info.sort(key=lambda x: x[2], reverse=True)
