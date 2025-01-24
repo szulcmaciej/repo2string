@@ -39,6 +39,42 @@ cd repo2string
 pip install .
 ```
 
+## Development Setup
+
+To set up the development environment:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/szulcmaciej/repo2string.git
+   cd repo2string
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install the package in editable mode with development dependencies:
+   ```bash
+   pip install -e ".[test]"
+   ```
+
+4. Install pre-commit hooks:
+   ```bash
+   pre-commit install
+   ```
+
+The pre-commit hooks will:
+- Run Ruff for linting and auto-formatting
+- Run pytest to ensure all tests pass
+- Block commits if any checks fail
+
+To run tests manually:
+```bash
+pytest
+```
+
 ## Usage
 
 ```bash
