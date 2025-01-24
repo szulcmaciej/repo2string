@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo2string"
+version = "0.1.0"
+description = "Turn a repository's tracked files into a single text for LLM context (with token counts)."
+authors = [
+  { name="Maciej Szulc", email="szulcmaciej1@gmail.com" },
+]
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License"
+]
+dependencies = [
+  "pyperclip",
+  "pathspec",
+  "tiktoken"
+]
+
+# This makes a console script entry point named `repo2string`
+[project.scripts]
+repo2string = "repo2string.cli:main"
