@@ -7,7 +7,7 @@ from pathspec import PathSpec
 # Attempt to import tiktoken for real token counting.
 try:
     import tiktoken
-    ENCODER = tiktoken.get_encoding("cl100k_base")
+    ENCODER = tiktoken.encoding_for_model("gpt-4o")
     def count_tokens(text):
         return len(ENCODER.encode(text))
 except ImportError:
