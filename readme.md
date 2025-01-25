@@ -69,7 +69,7 @@ The tool automatically excludes common directories and files that typically don'
 - Version control: `.git/`
 - Cache directories: `**/.*cache/`, `**/__pycache__/`
 - Build outputs: `**/build/`, `**/dist/`, `**/target/`, `**/bin/`, `**/obj/`, `**/out/`
-- Dependencies: `**/node_modules/`, `**/vendor/`
+- Dependencies: `**/node_modules/`, `**/vendor/`, `**/package-lock.json`
 - IDE files: `**/.idea/`, `**/.vscode/`, `**/.vs/`
 - Environment: `**/.env*/`, `**/venv/`
 

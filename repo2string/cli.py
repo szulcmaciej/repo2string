@@ -44,6 +44,7 @@ def get_files_content(path="."):
         "**/vendor/",  # PHP, Go
         "**/.env*/",  # Environment directories
         "**/venv/",  # Python virtual environments
+        "**/package-lock.json",  # Node.js lock file (package.json has enough context)
     ]
     if os.path.exists(gitignore_path):
         with open(gitignore_path, "r") as f:
