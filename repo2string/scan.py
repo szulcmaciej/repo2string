@@ -38,7 +38,8 @@ def get_included_files(path="."):
         "**/.vscode/",
         "**/.vs/",
         "**/vendor/",
-        "**/.env*/",
+        "**/.env",
+        "**/.env.*",
         "**/venv/",
         "**/package-lock.json",
     ]

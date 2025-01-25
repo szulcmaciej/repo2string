@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from repo2string.cli import count_tokens, get_files_content, main
+from repo2string.scan import get_included_files
 
 
 def test_get_files_content_basic():
@@ -246,3 +247,18 @@ def test_cli_main_nonexistent_path(capsys):
         captured = capsys.readouterr()
         assert "Error" in captured.err
         assert "/nonexistent/path" in captured.err
+
+
+def test_env_file_exclusion():
+    """Test that .env files are properly excluded."""
+    files = get_included_files(".")
+
+    # Convert all paths to lowercase for case-insensitive comparison
+    file_paths = [rel_path.lower() for _, rel_path, _, _ in files]
+
+    # Verify .env file is not included
+    assert "tests/.env" not in file_paths
+    assert ".env" not in file_paths
+
+    # Also verify no file path contains .env anywhere (like .env.local, .env.test, etc)
+    assert not any(".env" in path for path in file_paths)
