@@ -32,57 +32,36 @@ def test_index_route(client):
     assert b"copy to clipboard" in response.data.lower()
 
 
-def test_get_tree_route(client):
-    """Test the file tree endpoint."""
-    response = client.get("/get_tree")
+def test_api_files_route(client):
+    """Test the file list endpoint."""
+    response = client.get("/api/files")
     assert response.status_code == 200
     data = response.get_json()
-    assert "tree" in data
-    assert isinstance(data["tree"], list)
+    assert "files" in data
+    assert "basePath" in data
+    assert isinstance(data["files"], list)
     # Verify some expected files are present
-    tree_str = str(data["tree"]).lower()  # Case-insensitive comparison
-    assert "pyproject.toml" in tree_str
-    assert "readme.md" in tree_str
-
-
-def test_get_tokens_empty_selection(client):
-    """Test token counting with no files selected."""
-    response = client.post("/get_tokens", json={"selected_files": []})
-    assert response.status_code == 200
-    data = response.get_json()
-    assert "total_tokens" in data
-    assert data["total_tokens"] == 0
-    assert "token_counts" in data
-    assert isinstance(data["token_counts"], dict)
-    assert len(data["token_counts"]) == 0
-
-
-def test_get_tokens_with_files(client):
-    """Test token counting with actual files."""
-    test_files = [f[1] for f in get_included_files(".")][:2]  # Get first two files
-    response = client.post("/get_tokens", json={"selected_files": test_files})
-    assert response.status_code == 200
-    data = response.get_json()
-    assert "total_tokens" in data
-    assert data["total_tokens"] > 0
-    assert "token_counts" in data
-    assert isinstance(data["token_counts"], dict)
-    assert len(data["token_counts"]) == len(test_files)
-    # Verify each file has a positive token count
-    for count in data["token_counts"].values():
-        assert count > 0
+    files_str = str(data["files"]).lower()  # Case-insensitive comparison
+    assert "pyproject.toml" in files_str
+    assert "readme.md" in files_str
+    # Verify file structure
+    for file_info in data["files"]:
+        assert "relPath" in file_info
+        assert "absPath" in file_info
+        assert "tokens" in file_info
+        assert isinstance(file_info["tokens"], int)
 
 
 @patch("repo2string.ui_server.pyperclip")
-def test_copy_to_clipboard_route(mock_pyperclip, client):
-    """Test the clipboard copy endpoint."""
+def test_api_submit(mock_pyperclip, client):
+    """Test the submit endpoint."""
     test_files = [f[1] for f in get_included_files(".")][:2]  # Get first two files
 
-    response = client.post("/copy_to_clipboard", json={"selected_files": test_files})
+    response = client.post("/api/submit", json={"include": test_files})
     assert response.status_code == 200
     data = response.get_json()
-    assert "success" in data
-    assert data["success"] is True
+    assert "status" in data
+    assert data["status"] == "ok"
     assert "total_tokens" in data
     assert data["total_tokens"] > 0
 
@@ -93,15 +72,17 @@ def test_copy_to_clipboard_route(mock_pyperclip, client):
 def test_error_handling(client):
     """Test error handling for invalid requests."""
     # Test invalid JSON
-    response = client.post("/get_tokens", data="invalid json")
+    response = client.post("/api/submit", data="invalid json")
     assert response.status_code == 400
 
-    # Test missing required field
-    response = client.post("/get_tokens", json={})
-    assert response.status_code == 400
+    # Test empty selection
+    response = client.post("/api/submit", json={"include": []})
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["total_tokens"] == 0
 
     # Test invalid file paths
-    response = client.post("/get_tokens", json={"selected_files": ["nonexistent.py"]})
+    response = client.post("/api/submit", json={"include": ["nonexistent.py"]})
     assert response.status_code == 200  # Should handle gracefully
     data = response.get_json()
     assert data["total_tokens"] == 0

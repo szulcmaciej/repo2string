@@ -34,48 +34,33 @@ def create_app(base_path=None):
         dir_path = os.path.dirname(os.path.abspath(__file__))
         return send_from_directory(dir_path, "ui.html")
 
-    @app.route("/get_tree")
-    def get_tree():
-        """Return a list of all files in the directory."""
-        return jsonify({"tree": [f[1] for f in app.config["ALL_FILES"]]})
+    @app.route("/api/files", methods=["GET"])
+    def api_files():
+        """Return file tree and token counts."""
+        data = []
+        for full_path, rel_path, _, tokens in app.config["ALL_FILES"]:
+            data.append(
+                {
+                    "relPath": rel_path,
+                    "absPath": full_path,
+                    "tokens": tokens,
+                }
+            )
+        return jsonify({"files": data, "basePath": app.config["BASE_PATH"]})
 
-    @app.route("/get_tokens", methods=["POST"])
-    def get_tokens():
-        """Calculate tokens for selected files."""
-        if not request.is_json:
-            return jsonify({"error": "Invalid JSON"}), 400
-
-        data = request.get_json()
-        if "selected_files" not in data:
-            return jsonify({"error": "Missing selected_files"}), 400
-
-        selected_paths = data["selected_files"]
-        token_counts = {}
-        total_tokens = 0
-
-        for _, rel_path, _, tokens in app.config["ALL_FILES"]:
-            if rel_path in selected_paths:
-                token_counts[rel_path] = tokens
-                total_tokens += tokens
-
-        return jsonify({"total_tokens": total_tokens, "token_counts": token_counts})
-
-    @app.route("/copy_to_clipboard", methods=["POST"])
-    def copy_to_clipboard():
+    @app.route("/api/submit", methods=["POST"])
+    def api_submit():
         """Copy selected files to clipboard and prepare for shutdown."""
         if not request.is_json:
             return jsonify({"error": "Invalid JSON"}), 400
 
         data = request.get_json()
-        if "selected_files" not in data:
-            return jsonify({"error": "Missing selected_files"}), 400
-
-        selected_paths = data["selected_files"]
+        included_paths = data.get("include", [])
         filtered = []
         total_tokens = 0
 
         for full_path, rel_path, text, tokens in app.config["ALL_FILES"]:
-            if rel_path in selected_paths:
+            if rel_path in included_paths:
                 filtered.append((full_path, text))
                 total_tokens += tokens
 
@@ -93,7 +78,7 @@ def create_app(base_path=None):
                 )
             ).start()
 
-        return jsonify({"success": True, "total_tokens": total_tokens})
+        return jsonify({"status": "ok", "total_tokens": total_tokens})
 
     return app
 
