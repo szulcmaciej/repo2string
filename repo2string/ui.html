@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Repo2String UI</title>
+  <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <style>
+    :root {
+      --vscode-bg: #1e1e1e;
+      --vscode-fg: #d4d4d4;
+      --vscode-input-bg: #3c3c3c;
+      --vscode-button-bg: #0e639c;
+      --vscode-button-hover-bg: #1177bb;
+      --vscode-border: #454545;
+      --vscode-hover-bg: #2a2d2e;
+      --vscode-tree-indent-guide: #404040;
+      --vscode-checkbox-bg: #3c3c3c;
+      --vscode-checkbox-border: #6b6b6b;
+      --vscode-tokens-bg: #252526;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      margin: 20px;
+      background: var(--vscode-bg);
+      color: var(--vscode-fg);
+    }
+    
+    .tree-item {
+      margin: 1px 0;
+      padding: 3px 4px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .tree-item:hover {
+      background: var(--vscode-hover-bg);
+    }
+    
+    .tree-children {
+      margin-left: 24px;
+      border-left: 1px solid var(--vscode-tree-indent-guide);
+      padding-left: 12px;
+    }
+    
+    .folder-name {
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      color: var(--vscode-fg);
+    }
+    
+    .folder-name:before {
+      content: '▶';
+      display: inline-block;
+      margin-right: 8px;
+      transform: rotate(0deg);
+      transition: transform 0.2s;
+      font-size: 11px;
+      width: 12px;
+      height: 12px;
+      line-height: 12px;
+      text-align: center;
+      color: #808080;
+    }
+    
+    .folder-name.open:before {
+      transform: rotate(90deg);
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--vscode-border);
+    }
+    
+    .header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: normal;
+      color: var(--vscode-fg);
+    }
+    
+    .tokens {
+      margin-left: 10px;
+      color: var(--vscode-fg);
+      font-size: 12px;
+      padding: 2px 6px;
+      background: var(--vscode-tokens-bg);
+      border-radius: 3px;
+      border: 1px solid var(--vscode-border);
+    }
+    
+    .loading {
+      font-style: italic;
+      color: #808080;
+    }
+    
+    .select-all-btn {
+      margin-bottom: 10px;
+      padding: 4px 12px;
+      border: 1px solid var(--vscode-border);
+      border-radius: 3px;
+      background: var(--vscode-button-bg);
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    
+    .select-all-btn:hover {
+      background: var(--vscode-button-hover-bg);
+    }
+    
+    input[type="text"] {
+      padding: 6px 10px;
+      border: 1px solid var(--vscode-border);
+      border-radius: 3px;
+      width: 300px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      background: var(--vscode-input-bg);
+      color: var(--vscode-fg);
+    }
+    
+    input[type="text"]::placeholder {
+      color: #808080;
+    }
+    
+    input[type="checkbox"] {
+      margin: 0 8px 0 0;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--vscode-checkbox-border);
+      border-radius: 3px;
+      background: var(--vscode-checkbox-bg);
+      position: relative;
+      cursor: pointer;
+    }
+    
+    input[type="checkbox"]:checked:after {
+      content: '✓';
+      position: absolute;
+      color: var(--vscode-fg);
+      font-size: 12px;
+      left: 2px;
+      top: 0px;
+    }
+    
+    input[type="checkbox"]:indeterminate:after {
+      content: '';
+      position: absolute;
+      background: var(--vscode-fg);
+      width: 8px;
+      height: 2px;
+      left: 3px;
+      top: 6px;
+    }
+    
+    .submit-btn {
+      padding: 8px 16px;
+      background: var(--vscode-button-bg);
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    
+    .submit-btn:hover {
+      background: var(--vscode-button-hover-bg);
+    }
+    
+    #error-display {
+      color: #f48771;
+      margin: 20px 0;
+      padding: 10px;
+      border: 1px solid #f48771;
+      border-radius: 3px;
+      display: none;
+    }
+
+    p {
+      color: #808080;
+      font-size: 13px;
+      margin: 8px 0 16px 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .tokens-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tokens-note {
+      color: #808080;
+      font-size: 11px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div id="error-display"></div>
+<div id="root"></div>
+<script>
+  const { useState, useEffect } = React;
+  const e = React.createElement;
+
+  function buildFileTree(files) {
+    const root = { name: '', children: {}, type: 'folder', path: '', tokens: 0 };
+    
+    files.forEach(file => {
+      const parts = file.relPath.split('/');
+      let current = root;
+      let currentPath = '';
+      
+      parts.forEach((part, i) => {
+        currentPath = currentPath ? `${currentPath}/${part}` : part;
+        if (i === parts.length - 1) {
+          current.children[part] = {
+            name: part,
+            type: 'file',
+            path: currentPath,
+            tokens: file.tokens
+          };
+        } else {
+          if (!current.children[part]) {
+            current.children[part] = {
+              name: part,
+              children: {},
+              type: 'folder',
+              path: currentPath,
+              tokens: 0
+            };
+          }
+          current = current.children[part];
+        }
+      });
+    });
+    
+    function calculateFolderTokens(node) {
+      if (node.type === 'file') return node.tokens;
+      let total = 0;
+      Object.values(node.children).forEach(child => {
+        total += calculateFolderTokens(child);
+      });
+      node.tokens = total;
+      return total;
+    }
+    
+    calculateFolderTokens(root);
+    return root;
+  }
+
+  function getAllChildPaths(item) {
+    const paths = [];
+    function traverse(node) {
+      if (node.type === 'file') {
+        paths.push(node.path);
+      } else {
+        Object.values(node.children).forEach(traverse);
+      }
+    }
+    traverse(item);
+    return paths;
+  }
+
+  function TreeItem({ item, selected, onToggle, search, depth = 0, basePath }) {
+    const [isOpen, setIsOpen] = useState(depth === 0);
+    
+    // Helper function to check if any parent folder matches the search
+    function hasMatchingParent(itemPath) {
+      if (!search) return false;
+      const parts = itemPath.split('/');
+      let currentPath = '';
+      for (const part of parts) {
+        currentPath = currentPath ? `${currentPath}/${part}` : part;
+        if (part.toLowerCase().includes(search.toLowerCase())) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    if (item.type === 'file') {
+      if (search && !item.name.toLowerCase().includes(search.toLowerCase()) && !hasMatchingParent(item.path)) {
+        return null;
+      }
+      return e('div', { className: 'tree-item' },
+        e('label', null,
+          e('input', {
+            type: 'checkbox',
+            checked: selected.has(item.path),
+            onChange: () => onToggle(item.path, item.type)
+          }),
+          item.name
+        ),
+        e('span', { className: 'tokens' }, `(${item.tokens} tokens)`)
+      );
+    }
+
+    const children = Object.values(item.children);
+    if (search) {
+      // Show folder if:
+      // 1. Folder name matches search
+      // 2. Any child matches search
+      // 3. Any parent folder matches search
+      const folderMatches = item.name.toLowerCase().includes(search.toLowerCase());
+      const hasMatchingChildren = children.some(child => {
+        if (child.type === 'file') {
+          return child.name.toLowerCase().includes(search.toLowerCase());
+        }
+        // For folders, recursively check their contents
+        return true; // We'll filter at the child level
+      });
+      
+      if (!folderMatches && !hasMatchingChildren && !hasMatchingParent(item.path)) {
+        return null;
+      }
+      // If this folder matches, force it to be open
+      if (folderMatches && !isOpen) {
+        setIsOpen(true);
+      }
+    }
+
+    const childPaths = getAllChildPaths(item);
+    const allSelected = childPaths.every(path => selected.has(path));
+    const someSelected = childPaths.some(path => selected.has(path));
+    const isIndeterminate = someSelected && !allSelected;
+
+    return e('div', null,
+      e('div', { className: 'tree-item' },
+        e('span', {
+          className: `folder-name ${isOpen ? 'open' : ''}`,
+          onClick: (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }
+        }, item.name || (depth === 0 ? basePath : '')),
+        e('label', { style: { marginLeft: '5px' } },
+          e('input', {
+            type: 'checkbox',
+            checked: allSelected,
+            ref: el => {
+              if (el) el.indeterminate = isIndeterminate;
+            },
+            onChange: () => onToggle(item.path, item.type, childPaths)
+          })
+        ),
+        e('span', { className: 'tokens' }, `(${item.tokens} tokens)`)
+      ),
+      isOpen && e('div', { className: 'tree-children' },
+        children.map(child =>
+          e(TreeItem, {
+            key: child.path,
+            item: child,
+            selected,
+            onToggle,
+            search,
+            depth: depth + 1,
+            basePath
+          })
+        )
+      )
+    );
+  }
+
+  function App() {
+    const [fileTree, setFileTree] = useState(null);
+    const [selected, setSelected] = useState(new Set()); 
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [error, setError] = useState(null);
+    const [basePath, setBasePath] = useState("");
+
+    const showError = (message) => {
+      const errorDiv = document.getElementById('error-display');
+      errorDiv.style.display = 'block';
+      errorDiv.textContent = message;
+      console.error(message);
+      setError(message);
+    };
+
+    useEffect(() => {
+      fetch("/api/files")
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          if (!data || !data.files) throw new Error('Invalid data format from server');
+          const tree = buildFileTree(data.files);
+          setFileTree(tree);
+          setBasePath(data.basePath);
+          const allPaths = getAllChildPaths(tree);
+          setSelected(new Set(allPaths));
+          setLoading(false);
+        })
+        .catch(err => {
+          showError(`Error fetching file list: ${err.message}`);
+          setLoading(false);
+        });
+    }, []);
+
+    function handleToggle(path, type, childPaths = null) {
+      const newSelected = new Set(selected);
+      
+      if (type === 'folder') {
+        const paths = childPaths || getAllChildPaths({ path, type, children: fileTree.children[path]?.children || {} });
+        const allSelected = paths.every(p => selected.has(p));
+        
+        paths.forEach(p => {
+          if (allSelected) {
+            newSelected.delete(p);
+          } else {
+            newSelected.add(p);
+          }
+        });
+      } else {
+        if (selected.has(path)) {
+          newSelected.delete(path);
+        } else {
+          newSelected.add(path);
+        }
+      }
+      
+      setSelected(newSelected);
+    }
+
+    function handleSelectAll() {
+      if (!fileTree) return;
+      
+      if (selected.size === 0) {
+        const allPaths = getAllChildPaths(fileTree);
+        setSelected(new Set(allPaths));
+      } else {
+        setSelected(new Set());
+      }
+    }
+
+    function handleSubmit() {
+      setLoading(true);
+      fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ include: Array.from(selected) })
+      })
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          // Close window immediately after successful copy
+          window.close();
+          // Fallback for browsers that don't allow window.close()
+          setTimeout(() => {
+            document.body.innerHTML = `
+              <div style="text-align: center; margin-top: 50px; color: var(--vscode-fg);">
+                <h2>Selection copied to clipboard (${data.total_tokens} tokens)</h2>
+                <p style="color: #808080">You can close this window now.</p>
+              </div>
+            `;
+          }, 100);
+        })
+        .catch(err => {
+          showError(`Error submitting selection: ${err.message}`);
+          setLoading(false);
+        });
+    }
+
+    if (error) {
+      return e('div', { className: 'error' }, `Error: ${error}`);
+    }
+
+    if (!fileTree) {
+      return e('div', { className: 'loading' }, 'Loading...');
+    }
+
+    const selectedTokens = Array.from(selected).reduce((acc, path) => {
+      let current = fileTree;
+      const parts = path.split('/');
+      for (const part of parts) {
+        if (!current.children[part]) return acc;
+        current = current.children[part];
+      }
+      return acc + (current.tokens || 0);
+    }, 0);
+
+    return e('div', null,
+      e('div', { className: 'header' },
+        e('h2', null, 'Repo2String UI'),
+        e('div', { className: 'tokens-container' },
+          e('span', { className: 'tokens' }, `Selected Tokens: ${selectedTokens}`),
+          e('span', { className: 'tokens-note' }, '(final count may be slightly higher due to formatting)')
+        )
+      ),
+      e('p', null, 'Select/unselect files and folders, then click "Copy to Clipboard".'),
+      e('div', null,
+        e('input', {
+          type: 'text',
+          placeholder: 'Search files...',
+          value: search,
+          onChange: e => setSearch(e.target.value)
+        })
+      ),
+      e('button', {
+        className: 'select-all-btn',
+        onClick: handleSelectAll
+      }, selected.size === 0 ? 'Select All' : 'Unselect All'),
+      loading && e('div', { className: 'loading' }, 'Processing...'),
+      e(TreeItem, {
+        item: { ...fileTree, name: basePath },
+        selected,
+        onToggle: handleToggle,
+        search,
+        depth: 0,
+        basePath
+      }),
+      e('div', { style: { marginTop: '20px' } },
+        e('button', {
+          className: 'submit-btn',
+          onClick: handleSubmit
+        }, 'Copy to Clipboard & Close')
+      )
+    );
+  }
+
+  try {
+    ReactDOM.render(e(App), document.getElementById('root'));
+  } catch (err) {
+    const errorDiv = document.getElementById('error-display');
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = `React error: ${err.message}`;
+    console.error('React render error:', err);
+  }
+</script>
+</body>
+</html> 

@@ -7,21 +7,28 @@
 [![CI](https://github.com/szulcmaciej/repo2string/actions/workflows/ci.yml/badge.svg)](https://github.com/szulcmaciej/repo2string/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/szulcmaciej/repo2string/branch/master/graph/badge.svg)](https://codecov.io/gh/szulcmaciej/repo2string)
 
-**repo2string** is a Python package and CLI tool that gathers all files in a repository 
-(or any folder), excluding ignored files as specified by a `.gitignore` (if present), 
-and concatenates them into a single string. This is useful for copying the entire 
-codebase as a context to large language models (LLMs) like ChatGPT.
+## TLDR: "Help! I need to feed my entire codebase to ChatGPT!"
+```bash
+pip install repo2string
+cd your/project/path
+r2s  # That's it! Your entire codebase is now in your clipboard 📋
+```
+
+**repo2string** is a tool that helps you prepare your codebase for large language models (LLMs) like ChatGPT. In CLI mode, it automatically processes all relevant files in your project, excluding common build artifacts and respecting `.gitignore`. For more control, the UI mode lets you interactively select specific files and folders while tracking token counts. Either way, the result is copied to your clipboard, ready to be pasted into your favorite LLM.
 
 Features:
 
 - Recursively traverse directories.
 - Skip files listed in `.gitignore` (if present) or skip only `.git` if no `.gitignore` exists.
-- Generate a file tree (with absolute paths).
+- Skip common directories like build outputs, dependencies, and IDE files ([see default exclusions](#default-exclusions)).
+- Generate and include a file tree, making it easy to understand the codebase structure.
 - Include the contents of all non-ignored files.
 - Copy all text to your clipboard automatically.
 - **Token counting**: Displays the token count of the entire prompt. 
 - **Verbose mode** (`-v` or `--verbose`): Also prints the token counts per file, 
   sorted from highest to lowest.
+- **Interactive UI** (`--ui`): Opens a lightweight web interface to select exactly 
+  which files and folders to include.
 
 ## Installation
 
@@ -39,9 +46,7 @@ cd repo2string
 pip install .
 ```
 
-
-
-## Usage
+## Usage (CLI Mode)
 
 ```bash
 repo2string [PATH] [--verbose]
@@ -51,16 +56,50 @@ Or use the shorter alias:
 r2s [PATH] [--verbose]
 ```
 
+The CLI mode processes all relevant files in the directory (excluding those matched by `.gitignore` and default exclusions). Use this when you want to quickly copy the entire codebase.
+
 - `PATH` is optional; defaults to `.` (current directory).
 - `--verbose` or `-v` prints a token-count summary per file (descending).
 
 Example:
 
 ```bash
-repo2string /path/to/myproject --verbose
+r2s /path/to/myproject --verbose
+```
+
+For example, if you're in your project directory:
+
+```bash
+r2s .
+# Or simply:
+r2s
 ```
 
 You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
+
+## Usage (UI Mode)
+
+If you need to select specific files or folders to include:
+
+```bash
+r2s [PATH] --ui
+```
+
+This opens a lightweight web interface in your default browser. The UI runs on a local Flask server - no data ever leaves your machine, and the server automatically shuts down when you're done.
+
+This opens an interactive interface where you can:
+1. See a tree view of all files in the repository
+2. Select/deselect individual files or entire folders
+3. Search for specific files
+4. See token counts for each file and selection
+5. Copy only the selected files to clipboard
+
+The UI is particularly useful when:
+- You want to exclude certain files or folders
+- You need to stay under a token limit
+- You want to focus on specific parts of the codebase
+
+When done, click **"Copy to Clipboard"** to copy the selected files and close the UI.
 
 ### Default Exclusions
 
@@ -92,21 +131,6 @@ To set up the development environment:
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-
-3. Install the package in editable mode with development dependencies:
-   ```bash
-   pip install -e ".[test]"
-   ```
-
-4. Install pre-commit hooks:
-   ```bash
-   pre-commit install
-   ```
-
-The pre-commit hooks will:
-- Run Ruff for linting and auto-formatting
-- Run pytest to ensure all tests pass
-- Block commits if any checks fail
 
 To run tests manually:
 ```bash

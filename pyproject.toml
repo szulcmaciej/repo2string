@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repo2string"
-version = "0.2.12"
+version = "0.3.0"
 description = "Copy any repository into the clipboard. And get the token count."
 readme = "readme.md"
 requires-python = ">=3.8"
@@ -30,7 +30,8 @@ keywords = ["llm", "chatgpt", "repository", "context", "tokens", "clipboard"]
 dependencies = [
   "pyperclip",
   "pathspec",
-  "tiktoken"
+  "tiktoken",
+  "Flask"
 ]
 
 [project.urls]
@@ -41,6 +42,9 @@ dependencies = [
 [project.scripts]
 repo2string = "repo2string.cli:main"
 r2s = "repo2string.cli:main"
+
+[tool.setuptools.package-data]
+repo2string = ["ui.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
