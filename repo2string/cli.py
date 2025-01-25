@@ -26,12 +26,29 @@ def get_files_content(path="."):
 
     # Check if .gitignore exists
     gitignore_path = os.path.join(abs_path, ".gitignore")
+    # Common patterns to ignore across all languages/frameworks
+    patterns = [
+        ".git/",  # Git
+        "**/.*cache/",  # Various cache directories (.pytest_cache, .ruff_cache, etc.)
+        "**/__pycache__/",  # Python cache
+        "**/node_modules/",  # Node.js
+        "**/build/",  # Common build directories
+        "**/dist/",  # Distribution directories
+        "**/target/",  # Rust, Maven
+        "**/bin/",  # Binary directories
+        "**/obj/",  # .NET, C#
+        "**/out/",  # Java, Kotlin
+        "**/.idea/",  # JetBrains IDEs
+        "**/.vscode/",  # VS Code
+        "**/.vs/",  # Visual Studio
+        "**/vendor/",  # PHP, Go
+        "**/.env*/",  # Environment directories
+        "**/venv/",  # Python virtual environments
+    ]
     if os.path.exists(gitignore_path):
         with open(gitignore_path, "r") as f:
-            spec = PathSpec.from_lines("gitwildmatch", f)
-    else:
-        # If no .gitignore, only ignore .git directory
-        spec = PathSpec.from_lines("gitwildmatch", [".git/"])
+            patterns.extend(f.readlines())
+    spec = PathSpec.from_lines("gitwildmatch", patterns)
 
     # Store file data as we discover it
     files_data = []
