@@ -113,6 +113,16 @@ To run tests manually:
 pytest
 ```
 
+### Release Process
+
+The release process is automated. When you bump the version in `pyproject.toml` and push to the `master` branch:
+1. A GitHub Action will detect the version change
+2. Create a new release with the version number
+3. Generate release notes automatically
+4. Publish the package to PyPI
+
+No manual tagging or release creation is needed.
+
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
