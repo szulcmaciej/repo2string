@@ -22,6 +22,13 @@ def client(app):
     return app.test_client()
 
 
+@pytest.fixture(autouse=True)
+def mock_pyperclip():
+    """Mock pyperclip for all tests to avoid clipboard dependency."""
+    with patch("repo2string.ui_server.pyperclip") as mock:
+        yield mock
+
+
 def test_index_route(client):
     """Test that the main UI page is served correctly."""
     response = client.get("/")
@@ -52,7 +59,6 @@ def test_api_files_route(client):
         assert isinstance(file_info["tokens"], int)
 
 
-@patch("repo2string.ui_server.pyperclip")
 def test_api_submit(mock_pyperclip, client):
     """Test the submit endpoint."""
     test_files = [f[1] for f in get_included_files(".")][:2]  # Get first two files
