@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repo2string"
-version = "0.2.5"
+version = "0.2.6"
 description = "Copy any repository into the clipboard. And get the token count."
 readme = "readme.md"
 requires-python = ">=3.8"
@@ -40,6 +40,7 @@ dependencies = [
 # This makes a console script entry point named `repo2string`
 [project.scripts]
 repo2string = "repo2string.cli:main"
+r2s = "repo2string.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

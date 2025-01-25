@@ -46,6 +46,10 @@ pip install .
 ```bash
 repo2string [PATH] [--verbose]
 ```
+Or use the shorter alias:
+```bash
+r2s [PATH] [--verbose]
+```
 
 - `PATH` is optional; defaults to `.` (current directory).
 - `--verbose` or `-v` prints a token-count summary per file (descending).
@@ -57,6 +61,19 @@ repo2string /path/to/myproject --verbose
 ```
 
 You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
+
+### Default Exclusions
+
+The tool automatically excludes common directories and files that typically don't need to be included in the LLM context:
+
+- Version control: `.git/`
+- Cache directories: `**/.*cache/`, `**/__pycache__/`
+- Build outputs: `**/build/`, `**/dist/`, `**/target/`, `**/bin/`, `**/obj/`, `**/out/`
+- Dependencies: `**/node_modules/`, `**/vendor/`
+- IDE files: `**/.idea/`, `**/.vscode/`, `**/.vs/`
+- Environment: `**/.env*/`, `**/venv/`
+
+These are in addition to any patterns specified in your `.gitignore` file.
 
 Now you can paste the combined repo data into ChatGPT or another LLM interface to work on your code with maximum context.
 
