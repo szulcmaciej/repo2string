@@ -115,13 +115,17 @@ pytest
 
 ### Release Process
 
-The release process is automated. When you bump the version in `pyproject.toml` and push to the `master` branch:
-1. A GitHub Action will detect the version change
-2. Create a new release with the version number
-3. Generate release notes automatically
-4. Publish the package to PyPI
+The release process is fully automated through a chain of GitHub Actions:
 
-No manual tagging or release creation is needed.
+1. When you push to `master`, the CI workflow runs tests and linting
+2. If CI passes and the version in `pyproject.toml` was bumped:
+   - A new GitHub release is created automatically
+   - Release notes are generated from commit messages
+3. When the release is published:
+   - The package is automatically built and published to PyPI
+   - Using trusted publishing for enhanced security
+
+No manual intervention is needed beyond pushing your changes with a version bump.
 
 ## License
 
