@@ -39,6 +39,27 @@ cd repo2string
 pip install .
 ```
 
+
+
+## Usage
+
+```bash
+repo2string [PATH] [--verbose]
+```
+
+- `PATH` is optional; defaults to `.` (current directory).
+- `--verbose` or `-v` prints a token-count summary per file (descending).
+
+Example:
+
+```bash
+repo2string /path/to/myproject --verbose
+```
+
+You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
+
+Now you can paste the combined repo data into ChatGPT or another LLM interface to work on your code with maximum context.
+
 ## Development Setup
 
 To set up the development environment:
@@ -74,25 +95,6 @@ To run tests manually:
 ```bash
 pytest
 ```
-
-## Usage
-
-```bash
-repo2string [PATH] [--verbose]
-```
-
-- `PATH` is optional; defaults to `.` (current directory).
-- `--verbose` or `-v` prints a token-count summary per file (descending).
-
-Example:
-
-```bash
-repo2string /path/to/myproject --verbose
-```
-
-You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
-
-Now you can paste the combined repo data into ChatGPT or another LLM interface to work on your code with maximum context.
 
 ## License
 
