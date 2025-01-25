@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # to create releases
-      id-token: write   # for trusted publishing
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,13 +57,19 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
+      - name: Install build dependencies
+        if: steps.check_version.outputs.changed == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        if: steps.check_version.outputs.changed == 'true'
+        run: python -m build
+
       - name: Publish to PyPI
         if: steps.check_version.outputs.changed == 'true'
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          package_name: repo2string
-          # The action automatically does a build and upload if you don't override.
         env:
-          # For Trusted Publishing
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}  # if you still do password-based 
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: python -m twine upload dist/* 
