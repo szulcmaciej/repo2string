@@ -14,7 +14,7 @@ cd your/project/path
 r2s  # That's it! Your entire codebase is now in your clipboard 📋
 ```
 
-**repo2string** is a tool that helps you prepare your codebase for large language models (LLMs) like ChatGPT. In CLI mode, it automatically processes all relevant files in your project, excluding common build artifacts and respecting `.gitignore`. For more control, the UI mode lets you interactively select specific files and folders while tracking token counts. Either way, the result is copied to your clipboard, ready to be pasted into your favorite LLM.
+**repo2string** is a tool that helps you prepare your codebase for large language models (LLMs) like ChatGPT. In CLI mode, it automatically processes all relevant files in your project, excluding common build artifacts and respecting `.gitignore`. For more control, the selection mode lets you interactively select specific files and folders while tracking token counts. Either way, the result is copied to your clipboard, ready to be pasted into your favorite LLM.
 
 Features:
 
@@ -27,7 +27,7 @@ Features:
 - **Token counting**: Displays the token count of the entire prompt. 
 - **Verbose mode** (`-v` or `--verbose`): Also prints the token counts per file, 
   sorted from highest to lowest.
-- **Interactive UI** (`--ui`): Opens a lightweight web interface to select exactly 
+- **Selection mode** (`-s` or `--select`): Opens a lightweight web interface to select exactly 
   which files and folders to include.
 
 ## Installation
@@ -77,12 +77,14 @@ r2s
 
 You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
 
-## Usage (UI Mode)
+## Usage (Selection Mode)
 
 If you need to select specific files or folders to include:
 
 ```bash
-r2s [PATH] --ui
+r2s [PATH] --select
+# Or use the short flag:
+r2s [PATH] -s
 ```
 
 This opens a lightweight web interface in your default browser. The UI runs on a local Flask server - no data ever leaves your machine, and the server automatically shuts down when you're done.
@@ -94,7 +96,7 @@ This opens an interactive interface where you can:
 4. See token counts for each file and selection
 5. Copy only the selected files to clipboard
 
-The UI is particularly useful when:
+The selection mode is particularly useful when:
 - You want to exclude certain files or folders
 - You need to stay under a token limit
 - You want to focus on specific parts of the codebase

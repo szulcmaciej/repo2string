@@ -119,9 +119,10 @@ def main():
         help="Show token counts per file",
     )
     parser.add_argument(
-        "--ui",
+        "-s",
+        "--select",
         action="store_true",
-        help="Launch a local browser UI instead of printing to the console",
+        help="Launch a local browser UI to select specific files and folders",
     )
     args = parser.parse_args()
 
@@ -131,7 +132,7 @@ def main():
         sys.exit(1)
 
     # If user wants the UI, launch it and exit
-    if args.ui:
+    if args.select:
         from repo2string.ui_server import run_ui_server
 
         run_ui_server(args.path)
