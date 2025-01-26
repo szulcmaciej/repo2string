@@ -2,10 +2,31 @@ import os
 
 from pathspec import PathSpec
 
+# Common patterns to ignore across all languages/frameworks
+DEFAULT_IGNORE_PATTERNS = [
+    ".git/",  # Git
+    "**/.*cache/",  # Various cache directories (.pytest_cache, .ruff_cache, etc.)
+    "**/__pycache__/",  # Python cache
+    "**/node_modules/",  # Node.js
+    "**/build/",  # Common build directories
+    "**/dist/",  # Distribution directories
+    "**/target/",  # Rust, Maven
+    "**/bin/",  # Binary directories
+    "**/obj/",  # .NET, C#
+    "**/out/",  # Java, Kotlin
+    "**/.idea/",  # JetBrains IDEs
+    "**/.vscode/",  # VS Code
+    "**/.vs/",  # Visual Studio
+    "**/vendor/",  # PHP, Go
+    "**/.env*",  # Environment files and directories
+    "**/venv/",  # Python virtual environments
+    "**/package-lock.json",  # Node.js lock file (package.json has enough context)
+]
+
 try:
     import tiktoken
 
-    ENCODER = tiktoken.encoding_for_model("gpt-4o")
+    ENCODER = tiktoken.encoding_for_model("gpt-4")
 
     def count_tokens(text):
         """Count tokens in text using tiktoken, treating special tokens as normal text."""
@@ -26,26 +47,7 @@ def get_included_files(path="."):
     abs_path = os.path.abspath(path)
     gitignore_path = os.path.join(abs_path, ".gitignore")
 
-    patterns = [
-        ".git/",
-        "**/.*cache/",
-        "**/__pycache__/",
-        "**/node_modules/",
-        "**/build/",
-        "**/dist/",
-        "**/target/",
-        "**/bin/",
-        "**/obj/",
-        "**/out/",
-        "**/.idea/",
-        "**/.vscode/",
-        "**/.vs/",
-        "**/vendor/",
-        "**/.env",
-        "**/.env.*",
-        "**/venv/",
-        "**/package-lock.json",
-    ]
+    patterns = DEFAULT_IGNORE_PATTERNS.copy()
     if os.path.exists(gitignore_path):
         with open(gitignore_path, "r", encoding="utf-8") as f:
             patterns.extend(f.readlines())

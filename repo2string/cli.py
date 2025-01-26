@@ -5,7 +5,7 @@ import sys
 import pyperclip
 from pathspec import PathSpec
 
-from repo2string.scan import count_tokens
+from repo2string.scan import DEFAULT_IGNORE_PATTERNS, count_tokens
 
 
 def get_files_content(path="."):
@@ -15,26 +15,7 @@ def get_files_content(path="."):
 
     # Check if .gitignore exists
     gitignore_path = os.path.join(abs_path, ".gitignore")
-    # Common patterns to ignore across all languages/frameworks
-    patterns = [
-        ".git/",  # Git
-        "**/.*cache/",  # Various cache directories (.pytest_cache, .ruff_cache, etc.)
-        "**/__pycache__/",  # Python cache
-        "**/node_modules/",  # Node.js
-        "**/build/",  # Common build directories
-        "**/dist/",  # Distribution directories
-        "**/target/",  # Rust, Maven
-        "**/bin/",  # Binary directories
-        "**/obj/",  # .NET, C#
-        "**/out/",  # Java, Kotlin
-        "**/.idea/",  # JetBrains IDEs
-        "**/.vscode/",  # VS Code
-        "**/.vs/",  # Visual Studio
-        "**/vendor/",  # PHP, Go
-        "**/.env*/",  # Environment directories
-        "**/venv/",  # Python virtual environments
-        "**/package-lock.json",  # Node.js lock file (package.json has enough context)
-    ]
+    patterns = DEFAULT_IGNORE_PATTERNS.copy()
     if os.path.exists(gitignore_path):
         with open(gitignore_path, "r", encoding="utf-8") as f:
             patterns.extend(f.readlines())
