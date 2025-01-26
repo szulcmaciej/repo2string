@@ -5,18 +5,7 @@ import sys
 import pyperclip
 from pathspec import PathSpec
 
-# Attempt to import tiktoken for real token counting.
-try:
-    import tiktoken
-
-    ENCODER = tiktoken.encoding_for_model("gpt-4o")
-
-    def count_tokens(text):
-        return len(ENCODER.encode(text))
-except ImportError:
-    # Fallback to a simple approximation if tiktoken is not available
-    def count_tokens(text):
-        return len(text.split())
+from repo2string.scan import count_tokens
 
 
 def get_files_content(path="."):

@@ -8,11 +8,13 @@ try:
     ENCODER = tiktoken.encoding_for_model("gpt-4o")
 
     def count_tokens(text):
+        """Count tokens in text using tiktoken, treating special tokens as normal text."""
         # Treat special tokens as normal text
         return len(ENCODER.encode(text, disallowed_special=()))
 except ImportError:
-
+    # Fallback to a simple approximation if tiktoken is not available
     def count_tokens(text):
+        """Count tokens by splitting on whitespace (fallback method)."""
         return len(text.split())
 
 

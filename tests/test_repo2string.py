@@ -196,13 +196,13 @@ def test_token_counting_fallback():
         # Re-import to trigger the fallback
         from importlib import reload
 
-        import repo2string.cli
+        import repo2string.scan
 
-        reload(repo2string.cli)
+        reload(repo2string.scan)
 
         text = "Hello, world!"
         # Fallback should count words
-        assert repo2string.cli.count_tokens(text) == 2
+        assert repo2string.scan.count_tokens(text) == 2
 
 
 def test_cli_main(capsys):
