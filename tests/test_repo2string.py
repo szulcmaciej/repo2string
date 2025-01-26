@@ -262,3 +262,18 @@ def test_env_file_exclusion():
 
     # Also verify no file path contains .env anywhere (like .env.local, .env.test, etc)
     assert not any(".env" in path for path in file_paths)
+
+
+def test_token_counting_with_special_tokens():
+    """Test token counting with text containing special tiktoken tokens."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        test_dir = Path(tmpdir)
+
+        # Create a file with the special token
+        test_file = test_dir / "test.txt"
+        test_file.write_text("Here is some text with <|endoftext|> special token")
+
+        # This should not raise an error
+        files = get_included_files(str(test_dir))
+        assert len(files) == 1
+        assert files[0][3] > 0  # token count should be positive

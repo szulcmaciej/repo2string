@@ -5,10 +5,11 @@ from pathspec import PathSpec
 try:
     import tiktoken
 
-    ENCODER = tiktoken.encoding_for_model("gpt-4")
+    ENCODER = tiktoken.encoding_for_model("gpt-4o")
 
     def count_tokens(text):
-        return len(ENCODER.encode(text))
+        # Treat special tokens as normal text
+        return len(ENCODER.encode(text, disallowed_special=()))
 except ImportError:
 
     def count_tokens(text):
