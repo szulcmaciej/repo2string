@@ -7,14 +7,22 @@
 [![CI](https://github.com/szulcmaciej/repo2string/actions/workflows/ci.yml/badge.svg)](https://github.com/szulcmaciej/repo2string/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/szulcmaciej/repo2string/branch/master/graph/badge.svg)](https://codecov.io/gh/szulcmaciej/repo2string)
 
-## TLDR: "Help! I need to feed my entire codebase to ChatGPT!"
+## TLDR: "Help! ChatGPT needs to see my code!"
+Yeet your entire codebase into clipboard:
 ```bash
 pip install repo2string
 cd your/project/path
-r2s  # That's it! Your entire codebase is now in your clipboard 📋
+r2s  # Yoink! Your entire codebase is now in your clipboard 📋
 ```
 
-**repo2string** is a tool that helps you prepare your codebase for large language models (LLMs) like ChatGPT. In CLI mode, it automatically processes all relevant files in your project, excluding common build artifacts and respecting `.gitignore`. For more control, the selection mode lets you interactively select specific files and folders while tracking token counts. Either way, the result is copied to your clipboard, ready to be pasted into your favorite LLM.
+Token limit got you down? Cherry-pick your files:
+```bash
+r2s -s  # Opens a nice UI for file selection 🎯
+```
+
+---
+
+**repo2string** is a tool that helps you prepare your codebase for large language models (LLMs) like ChatGPT. In CLI mode, it automatically processes all relevant files in your project, excluding common build artifacts and respecting `.gitignore`. For more control, the file selection UI lets you interactively select specific files and folders while tracking token counts. Either way, the result is copied to your clipboard, ready to be pasted into your favorite LLM.
 
 Features:
 
@@ -24,10 +32,11 @@ Features:
 - Generate and include a file tree, making it easy to understand the codebase structure.
 - Include the contents of all non-ignored files.
 - Copy all text to your clipboard automatically.
-- **Token counting**: Displays the token count of the entire prompt. 
+- **Token counting**: Displays the token count of the 
+entire prompt (uses the **gpt-4o**/**o1** tokenizer)
 - **Verbose mode** (`-v` or `--verbose`): Also prints the token counts per file, 
   sorted from highest to lowest.
-- **Selection mode** (`-s` or `--select`): Opens a lightweight web interface to select exactly 
+- **File selection UI** (`-s` or `--select`): Opens a lightweight web interface to select exactly 
   which files and folders to include.
 
 ## Installation
@@ -46,62 +55,46 @@ cd repo2string
 pip install .
 ```
 
-## Usage (CLI Mode)
+## Usage
 
-```bash
-repo2string [PATH] [--verbose]
-```
-Or use the shorter alias:
+You can use either the full command `repo2string` or its shorter alias `r2s`.
+
+### CLI Mode
+
+The CLI mode processes all relevant files in the directory, excluding those matched by `.gitignore` and [default exclusions](#default-exclusions). Use this when you want to quickly copy the entire codebase.
+
 ```bash
 r2s [PATH] [--verbose]
 ```
 
-The CLI mode processes all relevant files in the directory (excluding those matched by `.gitignore` and default exclusions). Use this when you want to quickly copy the entire codebase.
-
-- `PATH` is optional; defaults to `.` (current directory).
-- `--verbose` or `-v` prints a token-count summary per file (descending).
+- `PATH` is optional; defaults to current directory
+- `--verbose` or `-v` shows token counts per file
 
 Example:
-
 ```bash
-r2s /path/to/myproject --verbose
+r2s                           # Copy current directory
+r2s /path/to/project         # Copy specific directory
+r2s -v                     # Show token counts per file
 ```
 
-For example, if you're in your project directory:
+### File Selection UI
+
+Need more control? The file selection UI lets you choose specific files and folders while tracking token counts.
 
 ```bash
-r2s .
-# Or simply:
-r2s
+r2s [PATH] --select  # or -s
 ```
 
-You will see console output summarizing the total token count, plus a per-file token breakdown if in verbose mode. The entire text is copied to your clipboard.
-
-## Usage (Selection Mode)
-
-If you need to select specific files or folders to include:
-
-```bash
-r2s [PATH] --select
-# Or use the short flag:
-r2s [PATH] -s
-```
-
-This opens a lightweight web interface in your default browser. The UI runs on a local Flask server - no data ever leaves your machine, and the server automatically shuts down when you're done.
-
-This opens an interactive interface where you can:
-1. See a tree view of all files in the repository
-2. Select/deselect individual files or entire folders
+This opens a local web interface where you can:
+1. Browse the file tree
+2. Select/deselect files and folders
 3. Search for specific files
-4. See token counts for each file and selection
-5. Copy only the selected files to clipboard
+4. Monitor token counts
+5. Copy only what you need
 
-The selection mode is particularly useful when:
-- You want to exclude certain files or folders
-- You need to stay under a token limit
-- You want to focus on specific parts of the codebase
+![Selection Mode Screenshot](.github/images/selection-mode.png)
 
-When done, click **"Copy to Clipboard"** to copy the selected files and close the UI.
+The UI runs locally - no data leaves your machine, and the server shuts down automatically when you're done.
 
 ### Default Exclusions
 
@@ -116,7 +109,7 @@ The tool automatically excludes common directories and files that typically don'
 
 These are in addition to any patterns specified in your `.gitignore` file.
 
-Now you can paste the combined repo data into ChatGPT or another LLM interface to work on your code with maximum context.
+
 
 ## Development Setup
 
