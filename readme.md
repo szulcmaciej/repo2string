@@ -1,6 +1,6 @@
 # repo2string
 
-[![PyPI version](https://badge.fury.io/py/repo2string.svg)](https://badge.fury.io/py/repo2string)
+[![PyPI - Version](https://img.shields.io/pypi/v/repo2string)](https://pypi.org/project/repo2string)
 [![Python Versions](https://img.shields.io/pypi/pyversions/repo2string)](https://pypi.org/project/repo2string/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://static.pepy.tech/badge/repo2string)](https://pepy.tech/project/repo2string)
