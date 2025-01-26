@@ -92,7 +92,7 @@ This opens a local web interface where you can:
 4. Monitor token counts
 5. Copy only what you need
 
-![Selection Mode Screenshot](.github/images/selection-mode.png)
+![Selection Mode Screenshot](https://raw.githubusercontent.com/szulcmaciej/repo2string/master/.github/images/selection-mode.png)
 
 The UI runs locally - no data leaves your machine, and the server shuts down automatically when you're done.
 
